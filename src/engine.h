@@ -60,3 +60,9 @@ Returns true, if key with provided scan code was pressed
 since previous update
 */
 bool IsKeyPressed(SDL_Scancode scanCode);
+
+/*!
+Writes the coordinations of the mouse in the provided
+integers.
+*/
+void GetMousePosition(int* x, int* y);

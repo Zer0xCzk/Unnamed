@@ -12,6 +12,7 @@ SDL_Renderer* gRenderer = NULL;
 static bool isRunning = true;
 static const Uint8* keyStates = NULL;
 static Uint8 lastKeyStates[SDL_NUM_SCANCODES];
+int mousex, mousey;
 
 //=============================================================================
 bool InitSDL()
@@ -176,4 +177,9 @@ bool IsKeyReleased(SDL_Scancode scanCode)
 bool IsKeyPressed(SDL_Scancode scanCode)
 {
 	return !lastKeyStates[scanCode] && keyStates[scanCode];
+}
+//=============================================================================
+void GetMousePosition(int* x, int* y)
+{
+	*x = mousex; *y = mousey;
 }
