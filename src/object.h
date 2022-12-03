@@ -10,6 +10,6 @@ struct Object
 	SDL_Rect box;
 	Sprite sprite;
 	SDL_Point center;
-	float angle;
 	float speed;
+	float angle;
 };

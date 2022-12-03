@@ -12,12 +12,15 @@
 void Update(float dt);
 void RenderFrame(float dt);
 
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
+#define WW 1920
+#define WH 1080
 
 int mx;
 int my;
-Object player{ 450,450,64,64,LoadSprite("assets/Test.png"),{player.box.w / 2,player.box.h / 2}};
+int wx;
+int wy;
+Object player{ 450,450,64,64,LoadSprite("assets/Test.png"),{player.box.w / 2,player.box.h / 2},500};
+Object test{ 0,0,60,60};
 
 //=============================================================================
 int main(int argc, char* argv[])
@@ -27,10 +30,12 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	if (!CreateWindow("The Game", WINDOW_WIDTH, WINDOW_HEIGHT))
+	if (!CreateWindow("PeeDee", WW, WH))
 	{
 		return 1;
 	}
+	SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_BORDERLESS);
+	
 
 	player.sprite = LoadSprite("assets/Test.png");
 
@@ -43,30 +48,46 @@ int main(int argc, char* argv[])
 }
 
 //=============================================================================
-float getangle(int xplayer, int yplayer, int xcursor, int ycursor)
+
+// This needs more work, seems to be pointing towards bottom right of the cursor
+int LookAt()
 {
-	float angle = -90 + atan2(yplayer - ycursor, xplayer - xcursor) * (180 / M_PI);
-	return angle >= 0 ? angle : 360 + angle;
+	int DeltaX;
+	int DeltaY;
+	double result;
+	DeltaX = player.box.x - mx;
+	DeltaY = player.box.y - my;
+	result = (atan2(-DeltaX, DeltaY) * 180.00000) / 3.141592;
+	return result;
 }
 
-void Inputs()
+void Inputs(double dt)
 {
-	if (IsKeyDown(SDL_SCANCODE_A))
+	if (IsKeyDown(SDL_SCANCODE_W) && player.box.y >= 0)
 	{
-		player.angle -= 1;
+		player.box.y -= (int)(player.speed * dt + 0.5f);
 	}
-	if (IsKeyDown(SDL_SCANCODE_D))
+	if (IsKeyDown(SDL_SCANCODE_S) && player.box.y + player.box.h <= WH)
 	{
-		player.angle += 1;
+		player.box.y += (int)(player.speed * dt + 0.5f);
+	}
+	if (IsKeyDown(SDL_SCANCODE_A) && player.box.x >= 0)
+	{
+		player.box.x -= (int)(player.speed * dt + 0.5f);
+	}
+	if (IsKeyDown(SDL_SCANCODE_D) && player.box.x + player.box.w <= WW)
+	{
+		player.box.x += (int)(player.speed * dt + 0.5f);
 	}
 }
 
 void Update(float dt)
 {
-	GetMousePosition(&mx, &my);
-	Inputs();
+	SDL_GetMouseState(&mx, &my);
+	Inputs(dt);
 	if (IsKeyDown(SDL_SCANCODE_ESCAPE))
 		ExitGame();
+
 }
 
 void RenderFrame(float interpolation)
@@ -74,5 +95,7 @@ void RenderFrame(float interpolation)
 	// Clear screen
 	SDL_SetRenderDrawColor(gRenderer, 65, 105, 225, 255);
 	SDL_RenderClear(gRenderer);
-	SDL_RenderCopyEx(gRenderer, player.sprite.texture, NULL, &player.box, getangle(player.center.x,player.center.y,mx,my), &player.center, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(gRenderer, player.sprite.texture, NULL, &player.box, LookAt(), &player.center, SDL_FLIP_NONE);
+	SDL_SetRenderDrawColor(gRenderer, 50, 50, 50, 255);
+	SDL_RenderFillRect(gRenderer, &test.box);
 }

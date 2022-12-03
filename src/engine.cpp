@@ -179,7 +179,3 @@ bool IsKeyPressed(SDL_Scancode scanCode)
 	return !lastKeyStates[scanCode] && keyStates[scanCode];
 }
 //=============================================================================
-void GetMousePosition(int* x, int* y)
-{
-	*x = mousex; *y = mousey;
-}
