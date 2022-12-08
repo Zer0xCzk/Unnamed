@@ -8,7 +8,6 @@
 struct Object
 {
 	SDL_Rect box;
-	Sprite sprite;
 	SDL_Point center;
 	float speed;
 	float angle;
